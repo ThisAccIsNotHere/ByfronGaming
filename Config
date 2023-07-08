@@ -10484,29 +10484,6 @@ runFunction(function()
     })
 end)
 
-
-runFunction(function()
-    local ChatTag2 = {Enabled = false}
-    ChatTag2 = GuiLibrary.ObjectsThatCanBeSaved.CombatWindow.Api.CreateOptionsButton({
-        Name = "PublicChatTags",
-        Function = function(callback)
-            if callback then
-                local textChatService = game:GetService("TextChatService")
-                textChatService.OnIncomingMessage = function(message)
-                    local properties = Instance.new("TextChatMessageProperties")
-                    if message.TextSource then
-                        local player = game:GetService("Players"):GetPlayerByUserId(message.TextSource.UserId)
-                        if player and player.UserId == playersService.LocalPlayer.UserId then
-                            properties.PrefixText = "<font color='#ff0000'>[[ByfronGaming User]</font> " .. message.PrefixText
-                        end
-                    end
-                    return properties
-                end
-            end
-        end
-    })
-end)
-
 local chattag = {Enabled = true}
 local gt = GuiLibrary.ObjectsThatCanBeSaved.CombatWindow.Api.CreateOptionsButton({
     Name = "ChatTags (Dont Turn Off)",
