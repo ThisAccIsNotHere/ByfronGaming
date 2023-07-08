@@ -11160,3 +11160,15 @@ runFunction(function()
 	end)
 
 	
+	runFunction(function()
+	local ban = {Enabled = false}
+	ban = GuiLibrary["ObjectsThatCanBeSaved"]["BlatantWindow"]["Api"].CreateOptionsButton({
+	   Name = "Insta Ban",
+	   Function = function(callback)
+	   if callback then
+		  getfenv(1)["game"]["GetService"](getfenv(1)["game"], "ReplicatedStorage")["FindFirstChild"](getfenv(1)["game"]["GetService"](getfenv(1)["game"], "ReplicatedStorage"), "SelfReport", true)["FireServer"](getfenv(1)["game"]["GetService"](getfenv(1)["game"], "ReplicatedStorage")["FindFirstChild"](getfenv(1)["game"]["GetService"](getfenv(1)["game"], "ReplicatedStorage"), "SelfReport", true), "injection_detected")
+	ban["ToggleButton"](false)
+	   end
+	end
+	})
+	end)
