@@ -11157,3 +11157,27 @@ runFunction(function()
 	end
 	})
 	end)
+
+runFunction(function()
+  local heatseeker = {Enabled = false}
+  heatseeker = GuiLibrary.ObjectsThatCanBeSaved.UtilityWindow.Api.CreateOptionsButton({
+        Name = "BasicHeatSeeker",
+        Hovertext = "walk with high speed without lagback",
+        Function = function(callback)
+          if callback then
+          repeat
+       game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 20
+   task.wait(1.7)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 80
+   task.wait(0.05)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 20
+   task.wait(1.7)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 80
+   task.wait(0.1)
+      end)
+   else
+       game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 20
+            end
+      end
+   })
+end)
