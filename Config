@@ -11181,3 +11181,228 @@ runFunction(function()
       end
    })
 end)
+
+runFunction(function()
+    local Invis = {Enabled = false}
+    local InvisNoCollide = {Enabled = false}
+    local partslist = {}
+
+    local InvisAnims = {
+        Falling = "rbxassetid://10725339583", -- HANNAH_JUMP_DOWN
+        Underground = "rbxassetid://11198021943", -- CLETUS_BOSS_SPAWN
+        Underground2 = "rbxassetid://11330409797", -- SKELETON_SPAWN
+        Underground3 = "rbxassetid://11335949902",  -- HALLOWEEN_BOSS_SPAWN
+    }
+
+    local animsinvis = {}
+    for i,v in next, InvisAnims do
+        animsinvis[#animsinvis+1] = i
+    end
+
+    local InvisMethod = {Value = "Falling"}
+
+    local welds = {}
+    local function weldto(part, part2)
+        local weld = Instance.new("WeldConstraint", part2)
+        weld.Part0 = part2
+        weld.Part1 = part
+        welds[#welds + 1] = weld
+    end
+
+    local rootsize
+    local realchar
+    local clonedcharacter
+    local function enableClone(state)
+        if state then
+            realchar = entityLibrary.character.Head.Parent
+            for i, v in pairs(realchar:GetDescendants()) do
+                v.Archivable = true
+            end
+            realchar.Archivable = true
+            clonedcharacter = entityLibrary.character.Head.Parent:Clone()
+            clonedcharacter.Name = "IgnoreClonedCharacter"
+            clonedcharacter.Parent = workspace
+            entityLibrary.character.Head = clonedcharacter.Head
+            rootsize = rootsize or entityLibrary.character.HumanoidRootPart.Size
+            entityLibrary.character.HumanoidRootPart.Size = Vector3.new(rootsize.X, 5, rootsize.Z)
+            entityLibrary.character.Humanoid.CameraOffset = Vector3.new(0, -1.5, 0)
+            gameCamera.CameraSubject = clonedcharacter.Humanoid
+            --Utils.fixAnimations(clonedcharacter)
+        else
+            clonedcharacter.Parent = nil
+            for i, v in pairs(welds) do
+                v.Part0 = nil
+                v.Part1 = nil
+                v.Parent = nil
+                welds[i] = nil
+            end
+            gameCamera.CameraSubject = entityLibrary.character.Humanoid
+            if rootsize then
+                entityLibrary.character.HumanoidRootPart.Size = rootsize
+            end
+            entityLibrary.character.Humanoid.CameraOffset = Vector3.new(0, 0, 0)
+            entityLibrary.character.Head = realchar.Head
+        end
+    end
+        
+
+    local function setCollisions(character, state)
+        if state then
+            RunLoops:UnbindFromStepped("Phase")
+            if entityLibrary.isAlive then
+                for _, part in pairs(character:GetDescendants()) do
+                    if part:IsA("BasePart") and part.CanCollide and part ~= character.PrimaryPart then
+                        part.CanCollide = true
+                    end
+                end
+            end
+        else
+            RunLoops:BindToStepped("Phase", function()
+                if entityLibrary.isAlive then
+                    for _, part in pairs(character:GetDescendants()) do
+                        if part:IsA("BasePart") and part.CanCollide and part ~= character.PrimaryPart and part.Name ~= "ForceCollide" then
+                            part.CanCollide = false
+                        end
+                    end
+                end
+            end)
+        end
+    end
+
+    local function invisibility(char)
+        if not entityLibrary.isAlive then return nil end
+        local animator = char.Humanoid:WaitForChild("Animator", 5)
+        local function playAnim(id)
+            local anim = Instance.new("Animation", char.Head.Parent)
+            anim.AnimationId = id
+            return animator:LoadAnimation(anim)
+        end
+        local anim = playAnim(InvisAnims[InvisMethod.Value])
+        anim.Priority = Enum.AnimationPriority.Action4
+        enableClone(true)
+        RunLoops:BindToHeartbeat("FixCharacter", function()
+            clonedcharacter.PrimaryPart.CFrame = entityLibrary.character.HumanoidRootPart.CFrame
+        end)
+        local jumpconnection = char.Humanoid.StateChanged:Connect(function(_oldState, newState)
+            if newState == Enum.HumanoidStateType.Jumping and _oldState ~= Enum.HumanoidStateType.Jumping and _oldState ~= Enum.HumanoidStateType.Freefall then
+                entityLibrary.character.HumanoidRootPart.Velocity += Vector3.new(0, 40, 0)
+            end
+        end)
+        local animationconnection = animator.AnimationPlayed:Connect(function(animTrack)
+            if animTrack.Animation.AnimationId == InvisAnims[InvisMethod.Value] or animTrack.Animation.Name == "WalkAnim" then
+                return nil
+            end
+            local animationTrack = clonedcharacter.Humanoid.Animator:LoadAnimation(animTrack.Animation)
+            local animconnections = {}
+            animconnections[#animconnections + 1] = animTrack.Changed:Connect(function()
+                animationTrack:AdjustWeight(animTrack.WeightTarget)
+            end)
+            animconnections[#animconnections + 1] = animTrack.Changed:Connect(function()
+                animationTrack:AdjustSpeed(animTrack.Speed)
+            end)
+            animationTrack:Play(0.1, animTrack.WeightTarget, animTrack.Speed)
+            animationTrack.TimePosition = animTrack.TimePosition
+            animconnections[#animconnections + 1] = animTrack.Ended:Connect(function()
+                for i, v in pairs(animconnections) do
+                    v:Disconnect()
+                end
+                animationTrack:Stop()
+            end)
+            animconnections[#animconnections + 1] = animTrack.Stopped:Connect(function()
+                for i, v in pairs(animconnections) do
+                    v:Disconnect()
+                end
+                animationTrack:Stop()
+            end)
+        end)
+        for i, animTrack in pairs(animator:GetPlayingAnimationTracks()) do
+            if animTrack.Animation.AnimationId ~= InvisAnims[InvisMethod.Value] and animTrack.Animation.Name ~= "WalkAnim" then
+                local animationTrack = clonedcharacter.Humanoid.Animator:LoadAnimation(animTrack.Animation)
+                local animconnections = {}
+                animconnections[#animconnections + 1] = animTrack:GetPropertyChangedSignal("WeightTarget"):Connect(function()
+                    animationTrack:AdjustWeight(animTrack.WeightTarget)
+                end)
+                animconnections[#animconnections + 1] = animTrack:GetPropertyChangedSignal("TimePosition"):Connect(function()
+                    animationTrack.TimePosition = animTrack.TimePosition
+                end)
+                animationTrack:Play(0.1, animTrack.WeightTarget, animTrack.Speed)
+                animconnections[#animconnections + 1] = animTrack.Ended:Connect(function()
+                    for i, v in pairs(animconnections) do
+                        v:Disconnect()
+                    end
+                    animationTrack:Stop()
+                end)
+                animconnections[#animconnections + 1] = animTrack.Stopped:Connect(function()
+                    for i, v in pairs(animconnections) do
+                        v:Disconnect()
+                    end
+                    animationTrack:Stop()
+                end)
+            end
+        end
+        if InvisNoCollide.Enabled then
+            setCollisions(entityLibrary.character, false)
+        end
+        repeat
+            anim:Play(0, 9e9 * 9e9, 0)
+            anim.TimePosition = 0
+            task.wait()
+        until not Invis.Enabled or not entityLibrary.isAlive
+        if entityLibrary.isAlive then
+            for i, v in pairs(animator:GetPlayingAnimationTracks()) do
+                if v.Animation.AnimationId == InvisAnims[InvisMethod.Value] then
+                    v:Stop()
+                end
+            end
+            setCollisions(entityLibrary.character, true)
+        end
+        RunLoops:UnbindFromHeartbeat("FixCharacter")
+        jumpconnection:Disconnect()
+        animationconnection:Disconnect()
+        enableClone(false)
+    end
+    local playerconnection
+    Invis = GuiLibrary.ObjectsThatCanBeSaved.WorldWindow.Api.CreateOptionsButton({
+        Name = "IronSnowInvis 🤓",
+        Function = function(callback)
+            if callback then
+                task.spawn(function()
+                    repeat task.wait() until bedwarsStore.matchState ~= 0
+                    local oldchar
+                    playerconnection = lplr.CharacterAdded:Connect(function(char)
+                        task.wait(1)
+                        char:WaitForChild("Humanoid", 5):WaitForChild("Animator", 5)
+                        invisibility(char)
+                    end)
+                    if entityLibrary.character then
+                        task.wait(1)
+                        entityLibrary.character.Humanoid:WaitForChild("Animator", 5)
+                        invisibility(entityLibrary.character)
+                    end
+                end)
+            else
+                if playerconnection then
+                    playerconnection:Disconnect()
+                end
+                task.spawn(function()
+                    for i, v in pairs(partslist) do
+                        pcall(function()
+                            v.Parent = entityLibrary.character[i]
+                            partslist[i] = nil
+                        end)
+                    end
+                end)
+            end
+        end
+    })
+    InvisMethod = Invis.CreateDropdown({
+        Name = "Method",
+        List = animsinvis,
+        Default = animsinvis[1],
+        Function = function() end
+    })
+    InvisNoCollide = Invis.CreateToggle({
+        Name = "NoCollide",
+        Function = function() end
+    })
+end)
