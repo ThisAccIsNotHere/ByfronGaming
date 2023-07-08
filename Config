@@ -10940,9 +10940,6 @@ runFunction(function()
     removeFace()
 end)
 
- if player.Name == "justanaveragejoealt1" or player.Name == "justanaveragejoealt2" or player.Name == "justanaveragejoealt3" or player.Name == "justanaveragejoealt4" or player.Name == "justanaveragejoealt5" or player.Name == "justanaveragejoealt6" or player.Name == "justanaveragejoealt7" or player.Name == "justanaveragejoealt8" or player.Name == "justanaveragejoealt9" then
-                        properties.PrefixText = "<font color='#6a0ee7'>[Vape Private]</font> " .. message.PrefixText
-
 runFunction(function()
     local ChatTag = {Enabled = false}
     ChatTag = GuiLibrary.ObjectsThatCanBeSaved.RenderWindow.Api.CreateOptionsButton({
