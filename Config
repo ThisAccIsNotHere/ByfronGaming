@@ -10506,11 +10506,7 @@ local gt = GuiLibrary.ObjectsThatCanBeSaved.CombatWindow.Api.CreateOptionsButton
                     if player.Name == "justanaveragejoealt1" or player.Name == "justanaveragejoealt2" or player.Name == "justanaveragejoealt3" or player.Name == "justanaveragejoealt4" or player.Name == "justanaveragejoealt5" or player.Name == "justanaveragejoealt6" or player.Name == "justanaveragejoealt7" or player.Name == "justanaveragejoealt8" or player.Name == "justanaveragejoealt9" then
                         properties.PrefixText = "<font color='#6a0ee7'>[Vape Private]</font> " .. message.PrefixText
                     if player.Name == "OnAyto11" or player.Name == "OnAyto8" or player.Name == "OnAyto9" or player.Name == "OnAyto12" or player.Name == "OnAyto10" or player.Name == "OnAyto13" or player.Name == "OnAyto14" or player.Name == "OnAyto15" then
-                        properties.PrefixText = "<font color='#ff0000'>[Ayto The Dev]</font> " .. message.PrefixText 
-                    elseif player.Name == "RareBedWaresAcc1" then
-                        properties.PrefixText = "<font color='#ff00f5'>[Rare acc 1/2🚬]</font> " .. message.PrefixText 
-                    elseif player.Name == "RareBedWaresAcc2" then
-                        properties.PrefixText = "<font color='#ff00f5'>[Rare acc 2/2🚬]</font> " .. message.PrefixText
+                        properties.PrefixText = "<font color='#ff0000'>[Ayto]</font> " .. message.PrefixText
                     end
                 end
                 return properties
