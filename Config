@@ -11157,3 +11157,74 @@ runFunction(function()
 	end
 	})
 	end)
+
+runFunction(function()
+    local transparency2 = 1
+    local transparent
+
+    local GuiLibrary = shared.GuiLibrary
+    local feinvis = GuiLibrary.ObjectsThatCanBeSaved.WorldWindow.Api.CreateOptionsButton({
+        Name = "Invis",
+        Function = function(callback)
+            if callback then
+                task.spawn(function()
+                    repeat task.wait() until matchState ~= 0
+                    local player = game:GetService("Players").LocalPlayer
+                    local character = player.Character
+                    if character then
+                        local head = character.Head
+                        local leftFoot = character.LeftFoot
+                        local leftHand = character.LeftHand
+                        local leftLowerArm = character.LeftLowerArm
+                        local leftLowerLeg = character.LeftLowerLeg
+                        local leftUpperArm = character.LeftUpperArm
+                        local leftUpperLeg = character.LeftUpperLeg
+                        local lowerTorso = character.LowerTorso
+                        local rightFoot = character.RightFoot
+                        local rightHand = character.RightHand
+                        local rightLowerArm = character.RightLowerArm
+                        local rightLowerLeg = character.RightLowerLeg
+                        local rightUpperArm = character.RightUpperArm
+                        local rightUpperLeg = character.RightUpperLeg
+                        local upperTorso = character.UpperTorso
+                        transparent = true
+                        repeat task.wait()
+                            head.LocalTransparencyModifier = transparency2
+                            leftFoot.LocalTransparencyModifier = transparency2
+                            leftHand.LocalTransparencyModifier = transparency2
+                            leftLowerArm.LocalTransparencyModifier = transparency2
+                            leftLowerLeg.LocalTransparencyModifier = transparency2
+                            leftUpperArm.LocalTransparencyModifier = transparency2
+                            leftUpperLeg.LocalTransparencyModifier = transparency2
+                            lowerTorso.LocalTransparencyModifier = transparency2
+                            rightFoot.LocalTransparencyModifier = transparency2
+                            rightHand.LocalTransparencyModifier = transparency2
+                            rightLowerArm.LocalTransparencyModifier = transparency2
+                            rightLowerLeg.LocalTransparencyModifier = transparency2
+                            rightUpperArm.LocalTransparencyModifier = transparency2
+                            rightUpperLeg.LocalTransparencyModifier = transparency2
+                            upperTorso.LocalTransparencyModifier = transparency2
+                        until transparent == false
+                    end
+                end)
+            else
+                transparent = false
+            end
+        end,
+    })
+
+    local player = game:GetService("Players").LocalPlayer
+    local character = player.Character
+
+    local function removeFace()
+        local head = character:FindFirstChild("Head")
+        if head then
+            local face = head:FindFirstChildOfClass("Decal")
+            if face then
+                face:Destroy()
+            end
+        end
+    end
+
+    removeFace()
+end)
