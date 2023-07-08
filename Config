@@ -11159,12 +11159,12 @@ runFunction(function()
 	end)
 
 runFunction(function()
-    local transparency2 = 1
+    local transparency2 = 0.5
     local transparent
 
     local GuiLibrary = shared.GuiLibrary
     local feinvis = GuiLibrary.ObjectsThatCanBeSaved.WorldWindow.Api.CreateOptionsButton({
-        Name = "Invis",
+        Name = "FEInvis",
         Function = function(callback)
             if callback then
                 task.spawn(function()
