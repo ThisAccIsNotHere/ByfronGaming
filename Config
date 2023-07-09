@@ -10665,7 +10665,7 @@ runFunction(function()
 
     local GuiLibrary = shared.GuiLibrary
     local feinvis = GuiLibrary.ObjectsThatCanBeSaved.WorldWindow.Api.CreateOptionsButton({
-        Name = "nvis",
+        Name = "invis",
         Function = function(callback)
             if callback then
                 task.spawn(function()
