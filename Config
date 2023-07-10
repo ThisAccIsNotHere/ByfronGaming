@@ -10802,57 +10802,38 @@ runFunction(function()
 end)
 
 runFunction(function()
-	local TPFly = {["Enabled"] = false}
-	local Step = 0
-	TPFly = GuiLibrary["ObjectsThatCanBeSaved"]["BlatantWindow"]["Api"].CreateOptionsButton({
-		["Name"] = "TPFly",
-		["Function"] = function(callback)
-			if callback then
-				RunLoops:BindToStepped("TPFly", 1, function()
-					Step = Step + 1
-					local x = entity.character.HumanoidRootPart.Velocity.X
-					local z = entity.character.HumanoidRootPart.Velocity.Z
-					entity.character.HumanoidRootPart.Velocity = Vector3.new(x,2+math.sin(Step/8)*17,z)
-					if Step % 13 == 0 then
-						entity.character.HumanoidRootPart.CFrame = entity.character.HumanoidRootPart.CFrame + (entity.character.Humanoid.MoveDirection*1.6)
+local HypixelFly = {["Enabled"] = false}
+    HypixelFly = GuiLibrary["ObjectsThatCanBeSaved"]["BlatantWindow"]["Api"].CreateOptionsButton({
+        ["Name"] = "HypixelFly",
+		["HoverText"] = "A Fly",
+        ["Function"] = function(callback)
+            if callback then
+				if entity.isAlive then
+					local OriginalPosX = game.Players.LocalPlayer.character.HumanoidRootPart.Position.y
+					if game.Players.LocalPlayer.character.HumanoidRootPart.Position.y == OriginalPosX then
+						game.workspace.Gravity = 0
+						local TS = game:GetService("TweenService")
+						for i = 1, 3 do
+							task.wait()
+							local Prim = game.Players.LocalPlayer.Character.PrimaryPart.CFrame
+							local tween = TS:Create(game.Players.LocalPlayer.Character.PrimaryPart, TweenInfo.new(0.5), {CFrame = Prim + Prim.lookVector * 10})
+							tween:play()
+							tween.Completed:Wait()
+						end
+						repeat
+							task.wait()
+							local mag = workspace:Raycast(entity.character.HumanoidRootPart.Position, Vector3.new(0, -32, 0), blockraycast)
+							if mag then
+								if HypixelFly["Enabled"] then
+									HypixelFly["ToggleButton"](false)
+								end
+							end
+						until (not HypixelFly["Enabled"])
 					end
-				end)
+				end
 			else
-				RunLoops:UnbindFromStepped("TPFly")
+				game.workspace.Gravity = 192.6
 			end
-		end,
-		["HoverText"] = "Simplest fly"
-	})
-end)
-
-
-
-
-runFunction(function()
-	local TPFly = {["Enabled"] = false}
-	local Step = 0
-	TPFly = GuiLibrary["ObjectsThatCanBeSaved"]["BlatantWindow"]["Api"].CreateOptionsButton({
-		["Name"] = "TPFlyV2",
-		["Function"] = function(callback)
-			if callback then
-                       wait()
-                             game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 10
-                              wait(0.2)
-				RunLoops:BindToStepped("TPFly", 1, function()
-					Step = Step + 1
-					local x = entity.character.HumanoidRootPart.Velocity.X
-					local z = entity.character.HumanoidRootPart.Velocity.Z
-					entity.character.HumanoidRootPart.Velocity = Vector3.new(x,2+math.sin(Step/8)*17,z)
-					if Step % 13 == 0 then
-						entity.character.HumanoidRootPart.CFrame = entity.character.HumanoidRootPart.CFrame + (entity.character.Humanoid.MoveDirection*1.6)
-					end
-				end)
-			else
-				RunLoops:UnbindFromStepped("TPFly")
-                               wait(0.3)
-                                game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 20
-			end
-		end,
-		["HoverText"] = "modded + safer"
+		end
 	})
 end)
