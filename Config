@@ -10800,3 +10800,59 @@ runFunction(function()
         ["HoverText"] = "BedTp Lano"
     })
 end)
+
+runFunction(function()
+	local TPFly = {["Enabled"] = false}
+	local Step = 0
+	TPFly = GuiLibrary["ObjectsThatCanBeSaved"]["BlatantWindow"]["Api"].CreateOptionsButton({
+		["Name"] = "TPFly",
+		["Function"] = function(callback)
+			if callback then
+				RunLoops:BindToStepped("TPFly", 1, function()
+					Step = Step + 1
+					local x = entity.character.HumanoidRootPart.Velocity.X
+					local z = entity.character.HumanoidRootPart.Velocity.Z
+					entity.character.HumanoidRootPart.Velocity = Vector3.new(x,2+math.sin(Step/8)*17,z)
+					if Step % 13 == 0 then
+						entity.character.HumanoidRootPart.CFrame = entity.character.HumanoidRootPart.CFrame + (entity.character.Humanoid.MoveDirection*1.6)
+					end
+				end)
+			else
+				RunLoops:UnbindFromStepped("TPFly")
+			end
+		end,
+		["HoverText"] = "Simplest fly"
+	})
+end)
+
+
+
+
+runFunction(function()
+	local TPFly = {["Enabled"] = false}
+	local Step = 0
+	TPFly = GuiLibrary["ObjectsThatCanBeSaved"]["BlatantWindow"]["Api"].CreateOptionsButton({
+		["Name"] = "TPFlyV2",
+		["Function"] = function(callback)
+			if callback then
+                       wait()
+                             game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 10
+                              wait(0.2)
+				RunLoops:BindToStepped("TPFly", 1, function()
+					Step = Step + 1
+					local x = entity.character.HumanoidRootPart.Velocity.X
+					local z = entity.character.HumanoidRootPart.Velocity.Z
+					entity.character.HumanoidRootPart.Velocity = Vector3.new(x,2+math.sin(Step/8)*17,z)
+					if Step % 13 == 0 then
+						entity.character.HumanoidRootPart.CFrame = entity.character.HumanoidRootPart.CFrame + (entity.character.Humanoid.MoveDirection*1.6)
+					end
+				end)
+			else
+				RunLoops:UnbindFromStepped("TPFly")
+                               wait(0.3)
+                                game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 20
+			end
+		end,
+		["HoverText"] = "modded + safer"
+	})
+end)
